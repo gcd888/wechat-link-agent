@@ -1,0 +1,71 @@
+# electron-builder 打包配置
+# 用于构建 Windows (.exe)、macOS (.dmg) 和 Linux (.AppImage) 安装包
+
+appId: com.wechat-link-agent
+productName: 微连
+copyright: Copyright © 2026
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist-electron
+  - dist
+  - package.json
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/logo.png
+  artifactName: "${productName}-Setup-${version}-win.${ext}"
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: build/logo.png
+  artifactName: "${productName}-${version}-mac-${arch}.${ext}"
+  category: public.app-category.developer-tools
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  icon: build/logo.png
+  artifactName: "${productName}-${version}-linux.${ext}"
+  category: Development
+
+# 自动更新
+publish:
+  provider: github
+  owner: gcd888
+  repo: wechat-link-agent
+  releaseType: release
+
+# 额外资源（包含 sql.js WASM 文件）
+extraResources:
+  - from: node_modules/sql.js/dist/
+    to: sqljs/
+    filter:
+      - "sql-wasm.wasm"

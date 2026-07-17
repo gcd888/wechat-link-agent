@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description rdf:about=""><dc:title>微连 WeChat Link Agent</dc:title><dc:creator>gcd888</dc:creator><dc:rights>Copyright (c) gcd888. All rights reserved.</dc:rights><dc:source>https://github.com/gcd888/wechat-link-agent</dc:source><dc:relation>https://gitee.com/gcd888/wechat-link-agent</dc:relation></rdf:Description></rdf:RDF></metadata>
+  <defs>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#07C160"/>
+      <stop offset="100%" stop-color="#4A9EFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 圆角方形背景（微信品牌绿） -->
+  <rect x="32" y="32" width="448" height="448" rx="96" ry="96" fill="#07C160"/>
+
+  <!-- W 主体：两条粗线条组成 W 形状 -->
+  <path d="M 120 160 L 170 340 L 256 240 L 342 340 L 392 160"
+        fill="none" stroke="#fff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 连接点：W 中间的链节（小圆环） -->
+  <circle cx="256" cy="240" r="16" fill="#fff"/>
+  <circle cx="256" cy="240" r="8" fill="#07C160"/>
+
+  <!-- 上方两个小圆点代表连接节点 -->
+  <circle cx="170" cy="120" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="342" cy="120" r="8" fill="#fff" opacity="0.8"/>
+<a href="https://github.com/gcd888/wechat-link-agent" style="display:none"><text x="0" y="0" font-size="1" opacity="0" fill="none">GitHub: gcd888/wechat-link-agent</text></a><a href="https://gitee.com/gcd888/wechat-link-agent" style="display:none"><text x="0" y="0" font-size="1" opacity="0" fill="none">Gitee: gcd888/wechat-link-agent</text></a></svg>

@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="16.000000pt" height="16.000000pt" viewBox="0 0 16.000000 16.000000"
+ preserveAspectRatio="xMidYMid meet"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description rdf:about=""><dc:title>微连 WeChat Link Agent</dc:title><dc:creator>gcd888</dc:creator><dc:rights>Copyright (c) gcd888. All rights reserved.</dc:rights><dc:source>https://github.com/gcd888/wechat-link-agent</dc:source><dc:relation>https://gitee.com/gcd888/wechat-link-agent</dc:relation></rdf:Description></rdf:RDF></metadata>
+
+<g transform="translate(0.000000,16.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M57 144 c-11 -12 -8 -42 6 -48 10 -5 10 -7 0 -12 -22 -10 -14 -31 13
+-37 29 -5 46 19 23 34 -12 8 -12 10 -1 18 20 12 10 45 -14 49 -11 2 -23 0 -27
+-4z"/>
+</g>
+<a href="https://github.com/gcd888/wechat-link-agent" style="display:none"><text x="0" y="0" font-size="1" opacity="0" fill="none">GitHub: gcd888/wechat-link-agent</text></a><a href="https://gitee.com/gcd888/wechat-link-agent" style="display:none"><text x="0" y="0" font-size="1" opacity="0" fill="none">Gitee: gcd888/wechat-link-agent</text></a></svg>
