@@ -97,7 +97,7 @@ jobs:
 
       # --- 下载所有平台产物 ---
       - name: 下载全部构建产物
-        uses: actions/download-artifacts@v4
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
           merge-multiple: true
@@ -142,7 +142,7 @@ jobs:
 
       # --- 下载所有平台产物 ---
       - name: 下载全部构建产物
-        uses: actions/download-artifacts@v4
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
           merge-multiple: true
