@@ -54,8 +54,9 @@ jobs:
           cache: npm
 
       # --- 安装依赖 ---
+      # 使用 --legacy-peer-deps 解决 electron-vite 2.x 与 vite 6.x 的 peer 冲突
       - name: 安装依赖
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       # --- 构建 & 打包 ---
       # macOS 下禁用自动代码签名（避免未签名构建失败）
