@@ -59,12 +59,12 @@ jobs:
         run: npm install --legacy-peer-deps
 
       # --- 构建 & 打包 ---
-      # macOS 下禁用自动代码签名（避免未签名构建失败）
+      # --publish never: 禁止 electron-builder 自动发布，由后续 release 作业统一处理
+      # CSC_IDENTITY_AUTO_DISCOVERY=false: macOS 下禁用自动代码签名
       - name: 构建打包
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-        run: npm run prod
+        run: npx electron-vite build && npx electron-builder --publish never
 
       # --- 整理产物文件名（用于上传） ---
       - name: 整理产物
