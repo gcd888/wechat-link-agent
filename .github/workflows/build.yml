@@ -1,0 +1,195 @@
+# =============================================================================
+# 微连 WeChat Link Agent — 自动打包发布工作流
+# =============================================================================
+# 触发条件：推送 v* 格式的 tag（如 v0.0.1）或手动触发
+# 构建平台：Windows / macOS / Linux
+# 发布目标：GitHub Releases + Gitee Releases（双平台同步）
+# =============================================================================
+
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'           # 推送 v 开头的 tag 时自动触发
+  workflow_dispatch:    # 支持手动触发
+
+# 同一时间同 tag 只运行一个构建
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ===========================================================================
+  # 阶段一：多平台构建
+  # ===========================================================================
+  build:
+    name: 构建 (${{ matrix.os }})
+    strategy:
+      fail-fast: false          # 一个平台失败不影响其他平台
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            artifact: exe
+          - os: macos-latest
+            platform: mac
+            artifact: dmg
+          - os: ubuntu-latest
+            platform: linux
+            artifact: AppImage
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      # --- 检出代码 ---
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # --- 配置 Node.js 环境 ---
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # --- 安装依赖 ---
+      - name: 安装依赖
+        run: npm ci
+
+      # --- 构建 & 打包 ---
+      # macOS 下禁用自动代码签名（避免未签名构建失败）
+      - name: 构建打包
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: npm run prod
+
+      # --- 整理产物文件名（用于上传） ---
+      - name: 整理产物
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          # 将 release 目录下的安装包复制到 artifacts
+          find release -maxdepth 1 \( -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.yml" \) -exec cp {} artifacts/ \;
+          ls -lh artifacts/
+
+      # --- 上传到 GitHub Actions 产物（供后续 Gitee 发布任务下载） ---
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.platform }}
+          path: artifacts/*
+          retention-days: 7
+
+  # ===========================================================================
+  # 阶段二：发布到 GitHub Releases
+  # ===========================================================================
+  release-github:
+    name: 发布到 GitHub Releases
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # --- 下载所有平台产物 ---
+      - name: 下载全部构建产物
+        uses: actions/download-artifacts@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      # --- 列出产物 ---
+      - name: 列出产物
+        run: ls -lh artifacts/
+
+      # --- 创建 GitHub Release 并上传附件 ---
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: 微连 ${{ github.ref_name }}
+          body: |
+            ## 微连 WeChat Link Agent ${{ github.ref_name }}
+
+            ### 下载说明
+            | 平台 | 文件 | 说明 |
+            |------|------|------|
+            | Windows | `微连-Setup-*-win.exe` | NSIS 安装包 |
+            | macOS (Intel) | `微连-*-mac-x64.dmg` | Intel 芯片 |
+            | macOS (Apple Silicon) | `微连-*-mac-arm64.dmg` | M1/M2/M3 芯片 |
+            | Linux | `微连-*-linux.AppImage` | 免安装运行 |
+          files: artifacts/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ===========================================================================
+  # 阶段三：发布到 Gitee Releases
+  # ===========================================================================
+  release-gitee:
+    name: 发布到 Gitee Releases
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # --- 下载所有平台产物 ---
+      - name: 下载全部构建产物
+        uses: actions/download-artifacts@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      # --- 创建 Gitee Release ---
+      - name: 创建 Gitee Release
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -e
+          # 创建 Gitee Release
+          RESPONSE=$(curl -s -X POST "https://gitee.com/api/v5/repos/gcd888/wechat-link-agent/releases" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"access_token\": \"${GITEE_TOKEN}\",
+              \"tag_name\": \"${TAG_NAME}\",
+              \"name\": \"微连 ${TAG_NAME}\",
+              \"body\": \"微信万能 Agent 遥控器 — 在微信里切换和调用电脑上的各种 AI Agent CLI\",
+              \"prerelease\": false,
+              \"target_commitish\": \"v0.0.1\"
+            }")
+          echo "创建 Release 响应: ${RESPONSE}"
+          RELEASE_ID=$(echo "${RESPONSE}" | jq -r '.id')
+          if [ -z "${RELEASE_ID}" ] || [ "${RELEASE_ID}" = "null" ]; then
+            echo "❌ 创建 Gitee Release 失败"
+            exit 1
+          fi
+          echo "✅ Gitee Release ID: ${RELEASE_ID}"
+          echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
+
+      # --- 逐个上传安装包到 Gitee Release ---
+      - name: 上传安装包到 Gitee
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          RELEASE_ID: ${{ env.RELEASE_ID }}
+        run: |
+          set -e
+          for file in artifacts/*; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              echo "上传: ${filename} ..."
+              RESPONSE=$(curl -s -X POST "https://gitee.com/api/v5/repos/gcd888/wechat-link-agent/releases/${RELEASE_ID}/attach_files" \
+                -H "Content-Type: multipart/form-data" \
+                -F "access_token=${GITEE_TOKEN}" \
+                -F "file=@${file}")
+              echo "上传响应: ${RESPONSE}"
+              echo "✅ 已上传: ${filename}"
+            fi
+          done
+          echo "🎉 Gitee Release 全部上传完成"

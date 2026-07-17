@@ -1,0 +1,50 @@
+# =============================================================================
+# 代码同步工作流 — GitHub → Gitee 镜像推送
+# =============================================================================
+# 触发条件：任何分支的 push 操作
+# 功能：将 GitHub 仓库的所有分支同步推送到 Gitee 仓库
+# 前置条件：在 GitHub Secrets 中配置 GITEE_SSH_KEY（Gitee SSH 私钥）
+#          或配置 GITEE_TOKEN（Gitee 访问令牌）
+# =============================================================================
+
+name: Sync to Gitee
+
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: 同步代码到 Gitee
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码（完整历史）
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # 获取完整 git 历史，以便同步所有分支
+
+      - name: 配置 Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # 使用 Token 方式推送到 Gitee（推荐，配置简单）
+      - name: 推送到 Gitee
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: |
+          # 添加 Gitee 远程仓库（使用 HTTPS + Token 认证）
+          git remote add gitee "https://oauth2:${GITEE_TOKEN}@gitee.com/gcd888/wechat-link-agent.git"
+
+          # 推送所有分支
+          echo "推送所有分支到 Gitee ..."
+          git push gitee --all --force
+
+          # 推送所有 tag
+          echo "推送所有 tag 到 Gitee ..."
+          git push gitee --tags --force
+
+          echo "✅ 同步完成"

@@ -7,7 +7,7 @@ copyright: Copyright © 2026
 
 directories:
   output: release
-  buildResources: build
+  buildResources: renderer/public/assets/brand
 
 files:
   - dist-electron
@@ -19,7 +19,7 @@ win:
     - target: nsis
       arch:
         - x64
-  icon: build/logo.png
+  icon: renderer/public/assets/brand/logo.png
   artifactName: "${productName}-Setup-${version}-win.${ext}"
 
 nsis:
@@ -34,7 +34,7 @@ mac:
       arch:
         - x64
         - arm64
-  icon: build/logo.png
+  icon: renderer/public/assets/brand/logo.png
   artifactName: "${productName}-${version}-mac-${arch}.${ext}"
   category: public.app-category.developer-tools
 
@@ -52,7 +52,7 @@ linux:
     - target: AppImage
       arch:
         - x64
-  icon: build/logo.png
+  icon: renderer/public/assets/brand/logo.png
   artifactName: "${productName}-${version}-linux.${ext}"
   category: Development
 
