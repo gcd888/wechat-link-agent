@@ -162,7 +162,7 @@ jobs:
             -d "{
               \"access_token\": \"${GITEE_TOKEN}\",
               \"tag_name\": \"${TAG_NAME}\",
-              \"name\": \"微连 ${TAG_NAME}\",
+              \"name\": \"WLA ${TAG_NAME}\",
               \"body\": \"微信万能 Agent 遥控器 — 在微信里切换和调用电脑上的各种 AI Agent CLI\",
               \"prerelease\": false,
               \"target_commitish\": \"v0.0.1\"

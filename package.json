@@ -1,6 +1,6 @@
 {
   "name": "wechat-link-agent",
-  "productName": "微连",
+  "productName": "WLA",
   "version": "0.1.0",
   "description": "微信万能 Agent 遥控器 — 在微信里切换和调用电脑上的各种 AI Agent CLI",
   "main": "dist-electron/main.js",

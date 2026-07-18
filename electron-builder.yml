@@ -2,7 +2,7 @@
 # 用于构建 Windows (.exe)、macOS (.dmg) 和 Linux (.AppImage) 安装包
 
 appId: com.wechat-link-agent
-productName: 微连
+productName: WLA
 copyright: Copyright © 2026
 
 directories:
