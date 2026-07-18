@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue" />
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green" />
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" />
   <img alt="Electron" src="https://img.shields.io/badge/Electron-33-47848F" />
@@ -356,16 +356,75 @@ npm run prod
 
 ---
 
+## 🌿 分支模型与版本规范
+
+本项目采用简化版 Git Flow 工作流，遵循 [SemVer 语义化版本](https://semver.org/lang/zh-CN/) 规范。
+
+### 分支职责
+
+| 分支 | 作用 | 生命周期 | 谁来提交 |
+|------|------|---------|---------|
+| `master` | 生产发布分支，始终可发布 | 永久 | 只通过 PR/合并进入 |
+| `dev` | 开发集成分支，下一个版本的开发线 | 永久 | **协作者往这里提 PR** |
+| `feature/*` | 单个功能开发 | 临时 | 完成后合并到 dev |
+| `hotfix/*` | 紧急 bug 修复 | 临时 | 合并到 master + dev 后删除 |
+
+### 版本号规则（SemVer）
+
+```
+v1.0.0  ← 首次正式发布
+   ↓
+v1.0.1  ← 紧急 bug 修复（hotfix，末位号递增）
+v1.0.2  ← 又一个紧急 bug 修复
+   ↓
+v1.1.0  ← 月度常规版本（新需求，中位号递增）
+v1.1.1  ← 紧急 hotfix
+   ↓
+v1.2.0  ← 下一个月度常规版本
+   ↓
+v2.0.0  ← 破坏性变更（首位号递增，很少使用）
+```
+
+- **月度常规版本**：中位号递增（`v1.1.0` → `v1.2.0`）
+- **紧急 hotfix**：末位号递增（`v1.1.0` → `v1.1.1`），无 bug 则不发
+- **破坏性变更**：首位号递增（`v1.x.x` → `v2.0.0`）
+
+### 发布流程
+
+```bash
+# 月度常规版本发布
+ git checkout dev && git pull origin dev   # 拉取最新开发代码
+git checkout master && git merge dev --no-ff  # 合并到 master
+git tag -a v1.1.0 -m "月度常规版本 v1.1.0"      # 打 tag
+git push origin master                        # 推送 master
+git push origin refs/tags/v1.1.0              # 推送 tag（触发自动构建）
+
+# 紧急 hotfix
+ git checkout master
+git checkout -b hotfix/v1.0.1                 # 从 master 拉出临时分支
+# ...修复 bug，提交...
+git checkout master && git merge hotfix/v1.0.1 --no-ff
+git tag -a v1.0.1 -m "紧急修复 v1.0.1"
+git push origin master && git push origin refs/tags/v1.0.1
+git checkout dev && git merge hotfix/v1.0.1 --no-ff && git push origin dev  # 同步到 dev
+git branch -d hotfix/v1.0.1                   # 删除临时分支
+```
+
+---
+
 ## 🤝 贡献
 
 欢迎贡献代码！请遵循以下流程：
 
 1. Fork 本仓库
-2. 切换到 `hotfix` 分支（`git checkout hotfix`）
-3. 提交更改（`git commit -m 'feat: add amazing feature'`）
-4. 推送到远程（`git push origin hotfix`）
-5. 发起 Pull Request 到 `hotfix` 分支
+2. 切换到 `dev` 分支（`git checkout dev`）
+3. 从 `dev` 拉出功能分支（`git checkout -b feature/your-feature`）
+4. 提交更改（`git commit -m 'feat: add amazing feature'`）
+5. 推送到你的 Fork（`git push origin feature/your-feature`）
+6. 发起 Pull Request 到 `dev` 分支
 
+> ⚠️ 请勿直接向 `master` 或 `hotfix/*` 分支提 PR，所有功能开发请合并到 `dev` 分支。
+>
 > 提交信息请遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范。
 
 更多贡献指南请参考 [贡献说明](docs/03-phase-development/04-contributing.md)。

@@ -167,7 +167,7 @@ npm run build && electron-builder --linux
 
 ```yaml
 appId: com.wechatlinkagent.app
-productName: 微连
+productName: WLA
 directories:
   output: release
   buildResources: build
@@ -409,7 +409,7 @@ snapcraft push release/*.snap
 
 ---
 
-查看完整更新日志：[CHANGELOG.md](https://github.com/your-org/wechat-link-agent/blob/main/CHANGELOG.md)
+查看完整更新日志：[CHANGELOG.md](https://github.com/your-org/wechat-link-agent/blob/master/CHANGELOG.md)
 ```
 
 ### 8.2 通知渠道
@@ -482,12 +482,13 @@ npm test
 npm run prod
 
 # 6. 合并到主分支
-git checkout main
+git checkout master
 git merge hotfix/v0.1.1
 
 # 7. 推送发布
 git tag -a v0.1.1 -m "Hotfix 0.1.1"
-git push origin v0.1.1
+git push origin master
+git push origin refs/tags/v0.1.1
 ```
 
 ---
