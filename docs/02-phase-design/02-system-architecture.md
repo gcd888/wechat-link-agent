@@ -414,7 +414,7 @@ window.electronAPI.onAgentStatusChange((data) => {
 ```yaml
 # electron-builder.yml
 appId: com.wechatlinkagent.app
-productName: 微连
+productName: WLA
 directories:
   output: release
 files:

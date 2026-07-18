@@ -423,17 +423,31 @@ import { type AgentConfig, type AgentStatus } from './types.js';
 
 ## 10. Git 分支策略
 
-### 10.1 分支命名
+### 10.1 分支模型
+
+本项目采用简化版 Git Flow 工作流，遵循 [SemVer 语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
 ```
-main/master        # 主分支（生产环境）
-develop            # 开发分支
-feature/xxx        # 功能分支
-bugfix/xxx         # 修复分支
-hotfix/xxx         # 紧急修复
+master              # 主分支（生产环境），始终可发布，受保护
+dev                 # 开发集成分支，下一个版本的开发线，协作者向这里提 PR
+feature/xxx         # 功能分支，从 dev 拉出，完成后合并回 dev
+hotfix/vX.Y.Z       # 紧急修复分支，从 master 拉出，合并到 master + dev 后删除
 ```
 
-### 10.2 提交信息
+### 10.2 版本号规则（SemVer）
+
+```
+v1.0.0  ← 首次正式发布
+v1.0.1  ← 紧急 bug 修复（hotfix，末位号递增）
+v1.1.0  ← 月度常规版本（新需求，中位号递增）
+v2.0.0  ← 破坏性变更（首位号递增，很少使用）
+```
+
+- **月度常规版本**：中位号递增（`v1.1.0` → `v1.2.0`）
+- **紧急 hotfix**：末位号递增（`v1.1.0` → `v1.1.1`），无 bug 则不发
+- **破坏性变更**：首位号递增（`v1.x.x` → `v2.0.0`）
+
+### 10.3 提交信息
 
 ```
 ✅ 推荐
@@ -451,7 +465,7 @@ update
 fix
 ```
 
-### 10.3 Code Review 检查清单
+### 10.4 Code Review 检查清单
 
 - [ ] 代码符合本规范
 - [ ] 无 ESLint 警告
