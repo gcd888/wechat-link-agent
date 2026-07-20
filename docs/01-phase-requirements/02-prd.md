@@ -7,7 +7,7 @@
 | 文档名称 | 产品需求文档 (Product Requirements Document) |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-04-01 |
 | 文档状态 | 草稿 |
 
 ---

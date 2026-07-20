@@ -1,0 +1,65 @@
+# =============================================================================
+# 微连 WeChat Link Agent — CI 持续集成检查工作流
+# =============================================================================
+# 触发条件：
+#   1. Pull Request 到 dev 或 master 分支时（贡献者提交 PR 自动触发）
+#   2. push 到 dev 分支时（日常开发推送）
+# 检查内容：
+#   - TypeScript 类型检查（tsc --noEmit）
+#   - 生产构建验证（electron-vite build，不打包安装包）
+# 目的：在 PR 合并前自动拦截类型错误和构建失败
+# =============================================================================
+
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - dev          # 贡献者 PR 到 dev 分支时触发
+      - master       # dev 合并到 master 的 PR 时触发
+  push:
+    branches:
+      - dev          # push 到 dev 时也触发（及早发现问题）
+
+# 同一 PR 的多次 push 只保留最新一次的检查结果
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ===========================================================================
+  # 类型检查 + 构建验证（单平台，快速反馈）
+  # ===========================================================================
+  check:
+    name: 类型检查与构建验证
+    runs-on: ubuntu-latest
+
+    steps:
+      # --- 检出代码 ---
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # --- 配置 Node.js 环境 ---
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # --- 安装依赖 ---
+      # .npmrc 已配置 legacy-peer-deps=true，解决 peer 冲突
+      - name: 安装依赖
+        run: npm install --legacy-peer-deps
+
+      # --- TypeScript 类型检查 ---
+      # tsc --noEmit 只做类型检查，不产出文件，速度快
+      - name: TypeScript 类型检查
+        run: npm run typecheck
+
+      # --- 构建验证 ---
+      # electron-vite build 验证代码能否正确编译打包（不生成安装包）
+      # CSC_IDENTITY_AUTO_DISCOVERY=false: 禁用 macOS 代码签名检查
+      - name: 构建验证
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: npx electron-vite build

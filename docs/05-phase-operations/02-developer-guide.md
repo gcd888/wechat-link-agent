@@ -7,7 +7,7 @@
 | 文档名称 | 开发者指南 |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-07-01 |
 
 ---
 
@@ -30,52 +30,76 @@
 wechat-link-agent/
 ├── src/                        # 主进程代码
 │   ├── main/                   # 主进程入口
-│   │   └── index.ts            # 窗口/托盘/IP C 注册
-│   ├── agent/                  # Agent 管理
-│   │   ├── manager.ts          # CRUD + 发送
-│   │   ├── scanner.ts          # PATH 扫描
-│   │   ├── provider.ts         # Provider 工厂
-│   │   ├── types.ts            # 类型定义
-│   │   └── providers/          # Provider 实现
+│   │   └── index.ts            # 窗口/托盘/IPC 注册、应用启动
+│   ├── preload/index.ts        # preload 脚本（contextBridge）
+│   ├── agent/                  # Agent 管理核心
+│   │   ├── manager.ts          # CRUD、状态管理、消息发送、PATH 扫描同步
+│   │   ├── scanner.ts          # PATH 扫描、注册表读取
+│   │   ├── provider.ts         # Provider 注册/创建工厂
+│   │   ├── types.ts            # AgentInfo/AgentConfig/AgentRegistryEntry
+│   │   └── providers/          # 各 CLI 的 Provider 实现
 │   │       ├── claude.ts
 │   │       ├── opencode.ts
+│   │       ├── codebuddy.ts
 │   │       └── generic.ts
-│   ├── wechat/                 # 微信集成
-│   │   ├── api.ts
-│   │   ├── login.ts
-│   │   └── monitor.ts
+│   ├── wechat/                 # 微信 iLink Bot API 集成
+│   │   ├── api.ts              # HTTP 客户端
+│   │   ├── login.ts            # 扫码登录
+│   │   ├── monitor.ts          # 消息长轮询
+│   │   ├── send.ts             # 回复消息
+│   │   ├── media.ts            # 图片/文件上传
+│   │   ├── accounts.ts         # 账号绑定管理
+│   │   ├── crypto.ts           # 加解密
+│   │   ├── sync-buf.ts         # 消息同步 buffer
+│   │   └── cdn.ts              # 文件 CDN 上传
+│   ├── commands/router.ts      # 微信端命令路由
 │   ├── database/               # 数据库
-│   │   ├── db.ts
-│   │   ├── schema.sql
-│   │   └── seed.sql
+│   │   ├── db.ts               # SQLite 连接、持久化、备份恢复
+│   │   ├── schema.sql          # 表结构定义
+│   │   └── seed.sql            # 种子数据
 │   ├── session.ts              # 会话管理
-│   ├── sync.ts                 # 同步入口
-│   └── crypto/                 # 加密模块
-│       └── encryption.ts
+│   ├── sync.ts                 # 主进程同步入口
+│   ├── sync/webdav.ts          # WebDAV 云同步实现
+│   ├── utils/
+│   │   ├── spawn.ts            # 子进程启动工具
+│   │   ├── split-message.ts    # 长消息拆分
+│   │   └── tool-noise-filter.ts # 工具调用日志过滤
 │
 ├── renderer/                   # 渲染进程代码
-│   ├── App.tsx                 # 根组件
-│   ├── components/             # 组件
-│   │   ├── NavSidebar/
-│   │   ├── ListPanel/
-│   │   ├── ChatPage/
-│   │   └── Settings/
-│   ├── stores/                 # Zustand 状态
-│   │   ├── ui-store.ts
-│   │   ├── agent-store.ts
-│   │   └── chat-store.ts
-│   ├── i18n/                   # 国际化
-│   └── styles/                 # 全局样式
+│   ├── App.tsx                 # 根组件 - 三栏布局
+│   ├── main.tsx                # React 入口
+│   ├── electron.d.ts           # window.electronAPI 类型声明
+│   ├── components/
+│   │   ├── NavSidebar/          # 导航栏（60px）
+│   │   ├── ListPanel/          # 列表面板（可拖拽）
+│   │   ├── ChatPage/           # 聊天界面
+│   │   ├── AgentManager/       # Agent 管理详情
+│   │   ├── StorePage/          # 商城页
+│   │   ├── Settings/           # 设置页
+│   │   └── shared/AgentAvatar  # Agent 头像组件
+│   ├── stores/                 # Zustand 状态管理
+│   │   ├── ui-store.ts         # 导航/主题/语言/面板宽度
+│   │   ├── agent-store.ts      # Agent 列表/当前 Agent
+│   │   └── chat-store.ts       # 消息列表/发送/流式输出
+│   ├── i18n/i18n.ts            # 国际化（i18next）
+│   └── styles/global.css       # 全局样式 + CSS 变量
 │
 ├── docs/                       # 文档
+│   ├── index.md                # 文档索引
 │   ├── 01-phase-requirements/  # 需求文档
 │   ├── 02-phase-design/        # 设计文档
 │   ├── 03-phase-development/   # 开发文档
 │   ├── 04-phase-testing/       # 测试文档
-│   └── 05-phase-operations/    # 运维文档
+│   ├── 05-phase-operations/    # 运维文档
+│   └── 06-marketing/           # 营销素材
 │
-├── build/                      # 构建资源
+├── build/                      # 构建资源（图标等）
 │   └── logo.png
+│
+├── .github/workflows/          # CI/CD 工作流
+│   ├── ci.yml                  # CI 检查
+│   ├── build.yml               # 构建发布
+│   └── sync-to-gitee.yml       # Gitee 镜像同步
 │
 ├── package.json
 ├── electron-builder.yml
@@ -100,7 +124,7 @@ wechat-link-agent/
 ### 2.1 克隆仓库
 
 ```bash
-git clone https://github.com/your-org/wechat-link-agent.git
+git clone https://github.com/gcd888/wechat-link-agent.git
 cd wechat-link-agent
 ```
 
@@ -108,10 +132,10 @@ cd wechat-link-agent
 
 ```bash
 # 使用 npm
-npm install
+npm install --legacy-peer-deps
 
 # 或使用 pnpm（推荐）
-pnpm install
+pnpm install --legacy-peer-deps
 ```
 
 ### 2.3 启动开发服务器
@@ -416,10 +440,10 @@ import { getDb, saveDb } from '../db'
 describe('数据库集成', () => {
   it('应正确保存配置', async () => {
     const db = await getDb()
-    db.run("INSERT INTO config (key, value) VALUES ('theme', 'dark')")
+    db.run("INSERT INTO app_config (key, value) VALUES ('theme', 'dark')")
     saveDb()
 
-    const result = db.exec("SELECT value FROM config WHERE key = 'theme'")
+    const result = db.exec("SELECT value FROM app_config WHERE key = 'theme'")
     expect(result[0].values[0][0]).toBe('dark')
   })
 })
@@ -567,8 +591,8 @@ logger.info('调试信息', { data: value })
 
 ## 10. 联系方式
 
-- GitHub Issues: https://github.com/your-org/wechat-link-agent/issues
-- Email: support@wechat-link-agent.com
+- GitHub Issues: https://github.com/gcd888/wechat-link-agent/issues
+- Gitee Issues: https://gitee.com/gcd888/wechat-link-agent/issues
 - 微信群: 扫描应用内二维码
 
 ---

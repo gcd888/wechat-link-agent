@@ -7,7 +7,7 @@
 | 文档名称 | 环境部署与配置文档 |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-06-01 |
 
 ---
 
@@ -41,7 +41,7 @@
 ### 2.1 克隆仓库
 
 ```bash
-git clone https://github.com/your-org/wechat-link-agent.git
+git clone https://github.com/gcd888/wechat-link-agent.git
 cd wechat-link-agent
 ```
 
@@ -414,33 +414,36 @@ name: Build
 
 on:
   push:
-    branches: [main]
+    branches: [master, dev]
+  pull_request:
+    branches: [dev]
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Type check
         run: npm run typecheck
 
       - name: Build
         run: npm run build
-
-      - name: Package
-        run: npm run prod
 ```
 
 ---
 
-*如有问题请查看 [GitHub Issues](https://github.com/your-org/wechat-link-agent/issues)*
+*如有问题请查看 [GitHub Issues](https://github.com/gcd888/wechat-link-agent/issues)*

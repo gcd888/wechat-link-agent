@@ -7,7 +7,7 @@
 | 文档名称 | 上线发布手册 |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-07-01 |
 
 ---
 
@@ -92,7 +92,7 @@ npm version major   # 0.1.0 → 1.0.0
 ### 3.3 更新 CHANGELOG.md
 
 ```markdown
-## [0.1.0] - 2025-01-10
+## [0.1.0] - 2026-07-15
 
 ### 新增
 - 支持 Claude Code、OpenCode、CodeBuddy
@@ -118,7 +118,7 @@ npm version major   # 0.1.0 → 1.0.0
 rm -rf dist release
 
 # 2. 安装依赖
-npm install
+npm install --legacy-peer-deps
 
 # 3. 运行测试
 npm test
@@ -310,7 +310,7 @@ import { autoUpdater } from 'electron-updater'
 export function setupAutoUpdater() {
   autoUpdater.setFeedURL({
     provider: 'github',
-    owner: 'your-org',
+    owner: 'gcd888',
     repo: 'wechat-link-agent'
   })
 
@@ -395,9 +395,9 @@ snapcraft push release/*.snap
 
 ### 下载链接
 
-- **Windows**: [下载 EXE](https://github.com/your-org/wechat-link-agent/releases/download/v0.1.0/微连-Setup-0.1.0-win.exe)
-- **macOS**: [下载 DMG](https://github.com/your-org/wechat-link-agent/releases/download/v0.1.0/微连-0.1.0.dmg)
-- **Linux**: [下载 AppImage](https://github.com/your-org/wechat-link-agent/releases/download/v0.1.0/微连-0.1.0.AppImage)
+- **Windows**: [下载 EXE](https://github.com/gcd888/wechat-link-agent/releases/download/v0.1.0/微连-Setup-0.1.0-win.exe)
+- **macOS**: [下载 DMG](https://github.com/gcd888/wechat-link-agent/releases/download/v0.1.0/微连-0.1.0.dmg)
+- **Linux**: [下载 AppImage](https://github.com/gcd888/wechat-link-agent/releases/download/v0.1.0/微连-0.1.0.AppImage)
 
 ### 升级说明
 
@@ -405,11 +405,11 @@ snapcraft push release/*.snap
 
 ### 反馈渠道
 
-如有问题，请在 [GitHub Issues](https://github.com/your-org/wechat-link-agent/issues) 反馈。
+如有问题，请在 [GitHub Issues](https://github.com/gcd888/wechat-link-agent/issues) 反馈。
 
 ---
 
-查看完整更新日志：[CHANGELOG.md](https://github.com/your-org/wechat-link-agent/blob/master/CHANGELOG.md)
+查看完整更新日志：[CHANGELOG.md](https://github.com/gcd888/wechat-link-agent/blob/master/CHANGELOG.md)
 ```
 
 ### 8.2 通知渠道
@@ -504,7 +504,7 @@ git push origin refs/tags/v0.1.1
 ```bash
 # 清理缓存
 rm -rf node_modules package-lock.json
-npm install
+npm install --legacy-peer-deps
 
 # 检查依赖
 npm ls

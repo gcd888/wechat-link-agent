@@ -427,7 +427,29 @@ git branch -d hotfix/v1.0.1                   # 删除临时分支
 >
 > 提交信息请遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范。
 
-更多贡献指南请参考 [贡献说明](docs/03-phase-development/04-contributing.md)。
+### CI 自动检查
+
+PR 提交后会自动触发 CI 检查（[ci.yml](.github/workflows/ci.yml)）：
+
+| 检查项 | 命令 | 说明 |
+|--------|------|------|
+| TypeScript 类型检查 | `npm run typecheck` | 确保类型正确 |
+| 构建验证 | `npx electron-vite build` | 确保代码可编译 |
+
+CI 检查通过后，维护者才会进行 Code Review。
+
+### 分支保护
+
+| 分支 | 保护规则 |
+|------|---------|
+| `master` | 禁止 force push / 禁止删除 / 合并需 PR 审查 / CI 必须通过 |
+| `dev` | 禁止 force push / 禁止删除 / CI 必须通过 |
+
+### 相关文档
+
+- [贡献指南](docs/03-phase-development/04-contributing.md) — 完整贡献流程、CI 门禁规则、Code Review 标准
+- [编码规范](docs/03-phase-development/02-coding-standards.md) — TypeScript / React / Git 规范
+- [变更日志](docs/05-phase-operations/06-changelog.md) — 版本变更记录
 
 ---
 

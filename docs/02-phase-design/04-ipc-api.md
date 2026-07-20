@@ -7,7 +7,7 @@
 | 文档名称 | IPC 接口设计文档 |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-05-01 |
 
 ---
 
@@ -384,7 +384,7 @@ ipcRenderer.invoke('session:list', 1)
       agentId: 1,
       title: '新会话',
       preview: '最后一条消息...',
-      updatedAt: '2024-01-10 10:00:00'
+      updatedAt: '2026-06-15 10:00:00'
     }
   ]
 }
@@ -548,7 +548,7 @@ ipcRenderer.invoke('sync:getStatus')
   success: true,
   data: {
     configured: true,
-    lastSync: '2024-01-10 10:00:00'
+    lastSync: '2026-06-15 10:00:00'
   }
 }
 ```
@@ -654,8 +654,8 @@ ipcRenderer.invoke('backup:list')
 {
   success: true,
   data: [
-    { path: '/path/1.db', size: 1024, date: '2024-01-10' },
-    { path: '/path/2.db', size: 1024, date: '2024-01-09' }
+    { path: '/path/1.db', size: 1024, date: '2026-06-15' },
+    { path: '/path/2.db', size: 1024, date: '2026-06-14' }
   ]
 }
 ```
@@ -961,8 +961,8 @@ ipcRenderer.invoke('provider:list')
     website: 'https://openai.com',
     baseUris: [{ protocol: 'openai', url: 'https://api.openai.com' }],
     logoUrl: '',
-    createdAt: '2024-01-10 10:00:00',
-    updatedAt: '2024-01-10 10:00:00'
+    createdAt: '2026-06-15 10:00:00',
+    updatedAt: '2026-06-15 10:00:00'
   }
 ]
 ```
