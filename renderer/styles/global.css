@@ -1,83 +1,162 @@
 /**
- * 全局样式
+ * 全局样式 — Apple Design 风格
  *
- * 使用 CSS 变量定义主题色，支持深色/浅色切换。
- * 三栏布局基础样式。
+ * 基于 Apple「Designing Fluid Interfaces」设计理念:
+ *   - 材质与深度: 半透明毛玻璃 (backdrop-filter) + 阴影分层，替代硬边框
+ *   - 即时响应: pointer-down 即反馈，:active 压缩 0.97 模拟物理触感
+ *   - 弹簧动画: 弹性 cubic-bezier 替代线性 ease，模拟 critically-damped spring
+ *   - 排版优化: 系统字体 + 光学尺寸 + 负字距 (大标题收紧) + 行高反比
+ *   - 滚动边缘: 渐变遮罩替代 1px 硬分割线，内容在浮动 chrome 下自然淡出
+ *   - 无障碍: prefers-reduced-motion / prefers-reduced-transparency 适配
  */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS 变量（深色模式） ─────────────────────────────── */
-html[data-theme='dark'] {
-  --color-bg-app: #141414;
-  --color-bg-nav: #111111;
-  --color-bg-panel: #1a1a1a;
-  --color-bg-content: #141414;
-  --color-bg-card: #1a1a1a;
-  --color-bg-hover: #2a2a2a;
-  --color-bg-active: #1a3a5c;
-  --color-border: #2d2d2d;
-  --color-text: #e0e0e0;
-  --color-text-secondary: #888888;
-  --color-text-muted: #555555;
-  --color-primary: #4a9eff;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-tag-official: #34d399;
-  --color-tag-official-bg: rgba(52,211,153,0.15);
-  --color-tag-thirdparty: #fbbf24;
-  --color-tag-thirdparty-bg: rgba(251,191,36,0.15);
-  --color-tag-relay: #a78bfa;
-  --color-tag-relay-bg: rgba(167,139,250,0.15);
-  --color-warning-bg: #423006;
-  --color-warning-border: #78350f;
-  --color-warning-text: #fbbf24;
-  /* 厂商标签：深色模式下使用较高对比度的文字色 */
-  --color-vendor-tag-text: #b0b0b0;
-  --color-vendor-tag-bg: rgba(255,255,255,0.08);
-  /* Agent 头像背景：深色模式下使用亮色圆形底，确保深色 logo 可见 */
-  --color-avatar-bg: rgba(255,255,255,0.92);
-  --color-avatar-border: rgba(255,255,255,0.15);
+/* ════════════════════════════════════════════════════════════
+ * 1. 弹簧缓动函数 — Apple critically-damped spring 近似
+ * damping 1.0 (无回弹) + response 0.3-0.4s
+ * ════════════════════════════════════════════════════════════ */
+:root {
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);        /* 临界阻尼弹簧 */
+  --ease-spring-bounce: cubic-bezier(0.34, 1.3, 0.64, 1); /* 轻微回弹 */
+  --ease-out-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 柔和减速 */
+  --duration-fast: 0.2s;   /* 快速反馈 */
+  --duration-normal: 0.3s; /* 常规过渡 */
+  --duration-slow: 0.5s;   /* 大面积过渡 */
 }
 
-/* ── CSS 变量（浅色模式） ─────────────────────────────── */
+/* ── CSS 变量（深色模式） — Apple 深色材质 ──────────────── */
+html[data-theme='dark'] {
+  /* 基础背景 — 略带蓝灰的深色，比纯黑更有层次 */
+  --color-bg-app: #161617;
+  --color-bg-nav: rgba(28, 28, 30, 0.72);       /* 半透明导航栏 */
+  --color-bg-panel: rgba(44, 44, 46, 0.65);     /* 半透明列表面板 */
+  --color-bg-content: #161617;
+  --color-bg-card: rgba(44, 44, 46, 0.8);       /* 半透明卡片 */
+  --color-bg-hover: rgba(255, 255, 255, 0.06);   /* 悬停高亮 */
+  --color-bg-active: rgba(74, 158, 255, 0.15);  /* 选中高亮 */
+  --color-border: rgba(255, 255, 255, 0.08);    /* 极淡边框 */
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+
+  /* 文字 — 深色模式下使用高对比度 */
+  --color-text: #f5f5f7;
+  --color-text-secondary: rgba(235, 235, 245, 0.6);
+  --color-text-muted: rgba(235, 235, 245, 0.3);
+  --color-primary: #0a84ff;   /* Apple 系统蓝 */
+  --color-success: #30d158;   /* Apple 系统绿 */
+  --color-warning: #ffd60a;   /* Apple 系统黄 */
+  --color-error: #ff453a;     /* Apple 系统红 */
+
+  /* 标签色 */
+  --color-tag-official: #30d158;
+  --color-tag-official-bg: rgba(48, 209, 88, 0.15);
+  --color-tag-thirdparty: #ffd60a;
+  --color-tag-thirdparty-bg: rgba(255, 214, 10, 0.15);
+  --color-tag-relay: #bf5af2;
+  --color-tag-relay-bg: rgba(191, 90, 242, 0.15);
+
+  /* 警告区域 */
+  --color-warning-bg: rgba(255, 214, 10, 0.08);
+  --color-warning-border: rgba(255, 214, 10, 0.2);
+  --color-warning-text: #ffd60a;
+
+  /* 厂商标签 */
+  --color-vendor-tag-text: rgba(235, 235, 245, 0.6);
+  --color-vendor-tag-bg: rgba(255, 255, 255, 0.06);
+
+  /* Agent 头像 */
+  --color-avatar-bg: rgba(255, 255, 255, 0.92);
+  --color-avatar-border: rgba(255, 255, 255, 0.15);
+
+  /* ── 材质变量 (Apple Materials) ── */
+  /* 导航栏材质：较重，分隔结构区域 */
+  --material-nav: rgba(28, 28, 30, 0.72);
+  --material-nav-blur: blur(40px) saturate(180%);
+  /* 列表面板材质：中等，区分功能区域 */
+  --material-panel: rgba(44, 44, 46, 0.65);
+  --material-panel-blur: blur(30px) saturate(150%);
+  /* 浮动工具栏材质：轻量，用于 header 和输入区 */
+  --material-toolbar: rgba(30, 30, 32, 0.7);
+  --material-toolbar-blur: blur(20px) saturate(180%);
+  /* 弹窗/菜单材质：最重，确保可读性 */
+  --material-popover: rgba(44, 44, 46, 0.85);
+  --material-popover-blur: blur(40px) saturate(200%);
+
+  /* ── 阴影深度 ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.45);
+  /* 分隔阴影 — 替代 1px border 的柔和投影 */
+  --shadow-divider: 0 0.5px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.15);
+
+  /* ── 滚动边缘遮罩 ── */
+  --mask-fade-y: linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 8px), transparent 100%);
+}
+
+/* ── CSS 变量（浅色模式） — Apple 浅色材质 ──────────────── */
 html[data-theme='light'] {
-  --color-bg-app: #f5f5f5;
-  --color-bg-nav: #e8e8e8;
-  --color-bg-panel: #ffffff;
-  --color-bg-content: #f5f5f5;
-  --color-bg-card: #ffffff;
-  --color-bg-hover: #eaeaea;
-  --color-bg-active: #d0e4ff;
-  --color-border: #d9d9d9;
-  --color-text: #1f1f1f;
-  --color-text-secondary: #666666;
-  --color-text-muted: #999999;
-  --color-primary: #1677ff;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-tag-official: #10b981;
-  --color-tag-official-bg: rgba(16,185,129,0.15);
-  --color-tag-thirdparty: #f59e0b;
-  --color-tag-thirdparty-bg: rgba(245,158,11,0.15);
-  --color-tag-relay: #8b5cf6;
-  --color-tag-relay-bg: rgba(139,92,246,0.15);
-  --color-warning-bg: #fffbeb;
-  --color-warning-border: #fde68a;
+  /* 基础背景 — 略带暖灰，比纯白更柔和 */
+  --color-bg-app: #f5f5f7;
+  --color-bg-nav: rgba(255, 255, 255, 0.72);     /* 半透明导航栏 */
+  --color-bg-panel: rgba(255, 255, 255, 0.65);   /* 半透明列表面板 */
+  --color-bg-content: #f5f5f7;
+  --color-bg-card: rgba(255, 255, 255, 0.8);
+  --color-bg-hover: rgba(0, 0, 0, 0.04);
+  --color-bg-active: rgba(0, 122, 255, 0.08);
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-strong: rgba(0, 0, 0, 0.1);
+
+  --color-text: #1d1d1f;
+  --color-text-secondary: rgba(60, 60, 67, 0.6);
+  --color-text-muted: rgba(60, 60, 67, 0.3);
+  --color-primary: #007aff;   /* Apple 系统蓝 */
+  --color-success: #34c759;
+  --color-warning: #ff9f0a;
+  --color-error: #ff3b30;
+
+  --color-tag-official: #34c759;
+  --color-tag-official-bg: rgba(52, 199, 89, 0.12);
+  --color-tag-thirdparty: #ff9f0a;
+  --color-tag-thirdparty-bg: rgba(255, 159, 10, 0.12);
+  --color-tag-relay: #af52de;
+  --color-tag-relay-bg: rgba(175, 82, 222, 0.12);
+
+  --color-warning-bg: rgba(255, 159, 10, 0.08);
+  --color-warning-border: rgba(255, 159, 10, 0.2);
   --color-warning-text: #92400e;
-  /* 厂商标签：浅色模式下使用较低对比度的文字色 */
-  --color-vendor-tag-text: #666666;
-  --color-vendor-tag-bg: rgba(0,0,0,0.05);
-  /* Agent 头像背景：浅色模式下无需额外底色 */
+
+  --color-vendor-tag-text: rgba(60, 60, 67, 0.6);
+  --color-vendor-tag-bg: rgba(0, 0, 0, 0.04);
+
   --color-avatar-bg: transparent;
   --color-avatar-border: transparent;
+
+  /* ── 材质变量 (Apple Materials) ── */
+  --material-nav: rgba(255, 255, 255, 0.72);
+  --material-nav-blur: blur(40px) saturate(180%);
+  --material-panel: rgba(255, 255, 255, 0.65);
+  --material-panel-blur: blur(30px) saturate(150%);
+  --material-toolbar: rgba(255, 255, 255, 0.75);
+  --material-toolbar-blur: blur(20px) saturate(180%);
+  --material-popover: rgba(255, 255, 255, 0.85);
+  --material-popover-blur: blur(40px) saturate(200%);
+
+  /* ── 阴影深度 ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --shadow-divider: 0 0.5px 0 rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  --mask-fade-y: linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 8px), transparent 100%);
 }
 
-/* ── 全局重置 ─────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 2. 全局重置 — 系统字体 + 光学尺寸
+ * ════════════════════════════════════════════════════════════ */
 * {
   margin: 0;
   padding: 0;
@@ -90,12 +169,23 @@ html, body, #root {
   overflow: hidden;
   background: var(--color-bg-app);
   color: var(--color-text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* 系统字体优先 — Apple SF Pro / Segoe UI，自带光学尺寸和字距表 */
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+               'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
+  /* 启用光学尺寸 — 字体在不同大小下自动调整字形 */
+  font-optical-sizing: auto;
+  /* 平滑字体渲染 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 文本渲染优先质量 */
+  text-rendering: optimizeLegibility;
 }
 
-/* ── 滚动条 ──────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 3. 滚动条 — 极简 Apple 风格
+ * ════════════════════════════════════════════════════════════ */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -104,48 +194,58 @@ html, body, #root {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-border-strong);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
 
-/* ── 三栏布局 ────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 4. 三栏布局 — 材质分层 + 阴影分隔
+ * ════════════════════════════════════════════════════════════ */
 .layout {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
 
-/* 第一栏：导航栏 */
+/* 第一栏：导航栏 — 较重材质，分隔结构区域 */
 .nav-sidebar {
   width: 60px;
   min-width: 60px;
-  background: var(--color-bg-nav);
+  background: var(--material-nav);
+  backdrop-filter: var(--material-nav-blur);
+  -webkit-backdrop-filter: var(--material-nav-blur);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 12px 0;
   gap: 4px;
-  border-right: 1px solid var(--color-border);
+  /* 用阴影替代硬边框 — 更柔和的深度分隔 */
+  box-shadow: inset -0.5px 0 0 rgba(0, 0, 0, 0.06), 1px 0 8px rgba(0, 0, 0, 0.03);
   z-index: 10;
+  flex-shrink: 0;
 }
 
-/* 第二栏：列表面板 */
+/* 第二栏：列表面板 — 中等材质，内容可在其下滚动 */
 .list-panel {
   width: var(--panel-width, 280px);
   min-width: 200px;
   max-width: 500px;
-  background: var(--color-bg-panel);
+  background: var(--material-panel);
+  backdrop-filter: var(--material-panel-blur);
+  -webkit-backdrop-filter: var(--material-panel-blur);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--color-border);
+  /* 阴影替代 border-right */
+  box-shadow: inset -0.5px 0 0 var(--color-border), 2px 0 12px rgba(0, 0, 0, 0.04);
   overflow: hidden;
   position: relative;
+  flex-shrink: 0;
 }
 
-/* 拖拽手柄 */
+/* 拖拽手柄 — 更宽的触控区域 + 视觉反馈 */
 .resize-handle {
   position: absolute;
   right: -3px;
@@ -154,54 +254,74 @@ html, body, #root {
   width: 6px;
   cursor: col-resize;
   z-index: 20;
+  transition: background var(--duration-fast) var(--ease-spring);
 }
 .resize-handle:hover {
   background: var(--color-primary);
-  opacity: 0.3;
+  opacity: 0.2;
+}
+.resize-handle:active {
+  opacity: 0.4;
 }
 
-/* 第三栏：内容区 */
+/* 第三栏：内容区 — 最深层 */
 .content-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--color-bg-content);
   overflow: hidden;
+  position: relative;
 }
 
-/* ── 导航图标按钮 ─────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 5. 导航图标按钮 — 即时反馈 + 弹簧过渡
+ * ════════════════════════════════════════════════════════════ */
 .nav-btn {
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 12px;   /* Apple 风格更大的圆角 */
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
+  /* 弹簧过渡 — 替代线性 ease */
+  transition: background var(--duration-fast) var(--ease-spring),
+              color var(--duration-fast) var(--ease-spring),
+              transform var(--duration-fast) var(--ease-spring);
   border: none;
   background: transparent;
   position: relative;
-  will-change: background, color;
+  will-change: background, color, transform;
 }
+/* hover — 柔和高亮 */
 .nav-btn:hover {
   background: var(--color-bg-hover);
   color: var(--color-text);
 }
+/* active 选中 — 胶囊背景 + 系统蓝 */
 .nav-btn.active {
   background: var(--color-bg-active);
   color: var(--color-primary);
 }
+/* active 指示条 — Apple 风格左侧圆角胶囊 */
 .nav-btn.active::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
+  left: -12px;            /* 贴齐导航栏左边缘 */
+  top: 50%;
+  transform: translateY(-50%);
   width: 3px;
+  height: 20px;
   border-radius: 0 3px 3px 0;
   background: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary);  /* 辉光效果 */
+}
+/* 即时按压反馈 — pointer-down 即响应，scale 0.92 模拟物理压缩 */
+.nav-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.08s var(--ease-out-soft);
 }
 
 /* 微信状态指示点 */
@@ -215,39 +335,51 @@ html, body, #root {
 }
 .wechat-dot.connected {
   background: var(--color-success);
-  box-shadow: 0 0 6px var(--color-success);
+  box-shadow: 0 0 6px var(--color-success), 0 0 12px rgba(48, 209, 88, 0.3);
 }
 .wechat-dot.disconnected {
   background: var(--color-text-muted);
 }
 
-/* ── 消息气泡 ────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 6. 消息气泡 — 深度分层 + 圆润圆角
+ * ════════════════════════════════════════════════════════════ */
 .message-bubble {
   max-width: 80%;
   padding: 10px 14px;
-  border-radius: 12px;
-  line-height: 1.6;
+  border-radius: 18px;       /* Apple 风格大圆角 */
+  line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
+  /* 字距 — 小字体略微正字距提升可读性 */
+  letter-spacing: 0.01em;
 }
+/* 用户消息 — 系统蓝 + 右下小圆角 */
 .message-bubble.user {
   background: var(--color-primary);
   color: #fff;
   align-self: flex-end;
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 6px;
+  box-shadow: var(--shadow-sm);
 }
+/* Agent 消息 — 半透明卡片 + 左下小圆角 */
 .message-bubble.assistant {
   background: var(--color-bg-card);
   color: var(--color-text);
   align-self: flex-start;
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 6px;
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+/* 系统消息 — 居中淡色 */
 .message-bubble.system {
   background: var(--color-bg-hover);
   color: var(--color-text-muted);
   align-self: center;
   font-size: 12px;
+  border-radius: 12px;
 }
 
 /* ── Markdown 预览模式 ──────────────────────────────── */
@@ -256,12 +388,18 @@ html, body, #root {
 }
 .message-bubble.markdown-mode p { margin: 0 0 8px 0; }
 .message-bubble.markdown-mode p:last-child { margin-bottom: 0; }
+/* 标题 — 负字距 + 紧凑行高 (Apple Typography: 大字收紧) */
 .message-bubble.markdown-mode h1,
 .message-bubble.markdown-mode h2,
 .message-bubble.markdown-mode h3,
-.message-bubble.markdown-mode h4 { margin: 12px 0 6px 0; font-weight: 600; line-height: 1.4; }
-.message-bubble.markdown-mode h1 { font-size: 1.4em; }
-.message-bubble.markdown-mode h2 { font-size: 1.25em; }
+.message-bubble.markdown-mode h4 {
+  margin: 12px 0 6px 0;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;  /* 大字负字距 */
+}
+.message-bubble.markdown-mode h1 { font-size: 1.4em; letter-spacing: -0.02em; }
+.message-bubble.markdown-mode h2 { font-size: 1.25em; letter-spacing: -0.015em; }
 .message-bubble.markdown-mode h3 { font-size: 1.1em; }
 .message-bubble.markdown-mode ul,
 .message-bubble.markdown-mode ol { margin: 4px 0 8px 0; padding-left: 20px; }
@@ -270,16 +408,16 @@ html, body, #root {
 .message-bubble.markdown-mode li { margin: 2px 0; }
 .message-bubble.markdown-mode li::marker { color: var(--color-text-secondary); }
 .message-bubble.markdown-mode code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.88em;
   padding: 1px 5px;
-  border-radius: 4px;
+  border-radius: 5px;
   background: var(--color-bg-hover);
 }
 .message-bubble.markdown-mode pre {
   margin: 8px 0;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--color-bg-app);
   border: 1px solid var(--color-border);
   overflow-x: auto;
@@ -293,7 +431,7 @@ html, body, #root {
 .message-bubble.markdown-mode blockquote {
   margin: 8px 0;
   padding: 4px 12px;
-  border-left: 3px solid var(--color-border);
+  border-left: 3px solid var(--color-border-strong);
   color: var(--color-text-secondary);
 }
 .message-bubble.markdown-mode a {
@@ -322,38 +460,54 @@ html, body, #root {
 }
 .message-bubble.markdown-mode img {
   max-width: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-/* ── 通用操作按钮 ──────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 7. 通用操作按钮 — Apple 风格 + 即时按压反馈
+ * ════════════════════════════════════════════════════════════ */
 .action-btn {
   padding: 8px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  background: var(--color-bg-card);
   color: var(--color-text);
   cursor: pointer;
   font-size: 13px;
-  transition: background 0.12s, opacity 0.12s;
+  transition: background var(--duration-fast) var(--ease-spring),
+              transform var(--duration-fast) var(--ease-spring);
   margin-top: 8px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .action-btn:hover {
   background: var(--color-bg-hover);
+}
+/* 即时按压反馈 */
+.action-btn:active {
+  transform: scale(0.97);
+  transition: transform 0.08s var(--ease-out-soft);
 }
 .action-btn.primary {
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
 }
 .action-btn.primary:hover {
   opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+.action-btn.primary:active {
+  transform: scale(0.97);
 }
 
-/* ── 反馈渠道卡片 ─────────────────────────────────── */
-/* 网格：默认两行两列（2×2），窄屏回退单列 */
+/* ════════════════════════════════════════════════════════════
+ * 8. 反馈渠道卡片
+ * ════════════════════════════════════════════════════════════ */
 .feedback-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -367,20 +521,20 @@ html, body, #root {
 }
 .feedback-card {
   cursor: default;
+  transition: transform var(--duration-normal) var(--ease-spring),
+              box-shadow var(--duration-normal) var(--ease-spring),
+              border-color var(--duration-normal) var(--ease-spring);
 }
 .feedback-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: var(--color-primary);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
 }
 
-/* GitHub 图标为 currentColor 单色，作为 <img> 引入时渲染为黑色；
-   深色主题下反色为白色，保证对比度 */
 [data-theme='dark'] .feedback-brand-icon {
   filter: invert(1) brightness(1.7);
 }
 
-/* 卡片右上角复制图标 */
 .feedback-copy-btn {
   position: absolute;
   top: 12px;
@@ -395,20 +549,23 @@ html, body, #root {
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all var(--duration-fast) var(--ease-spring);
 }
 .feedback-copy-btn:hover {
   color: var(--color-primary);
   border-color: var(--color-primary);
   background: var(--color-bg-hover);
 }
+.feedback-copy-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.08s var(--ease-out-soft);
+}
 .feedback-copy-btn.copied {
-  color: #22c55e;
-  border-color: #22c55e;
-  background: rgba(34, 197, 94, 0.10);
+  color: var(--color-success);
+  border-color: var(--color-success);
+  background: rgba(48, 209, 88, 0.10);
 }
 
-/* 内嵌网页视图右上角关闭按钮 */
 .feedback-close-btn {
   display: inline-flex;
   align-items: center;
@@ -421,23 +578,29 @@ html, body, #root {
   background: transparent;
   color: var(--color-text);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all var(--duration-fast) var(--ease-spring);
 }
 .feedback-close-btn:hover {
   color: var(--color-error);
   border-color: var(--color-error);
   background: var(--color-bg-hover);
 }
+.feedback-close-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.08s var(--ease-out-soft);
+}
 .feedback-close-btn webview {
   width: 100%;
   height: 100%;
 }
 
-/* ── 输入框 ──────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 9. 输入框 — Apple 圆角 + 聚焦光晕
+ * ════════════════════════════════════════════════════════════ */
 .chat-input {
-  background: var(--color-bg-panel);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 12px;
   color: var(--color-text);
   padding: 10px 14px;
   font-size: 14px;
@@ -446,126 +609,151 @@ html, body, #root {
   width: 100%;
   min-height: 42px;
   max-height: 120px;
-  transition: border-color 0.15s;
+  transition: border-color var(--duration-fast) var(--ease-spring),
+              box-shadow var(--duration-fast) var(--ease-spring);
 }
+/* 聚焦 — 系统蓝边框 + 柔和光晕 */
 .chat-input:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
 }
 
-/* ── Agent 列表项 ────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 10. Agent 列表项 — 弹簧悬停 + 按压反馈
+ * ════════════════════════════════════════════════════════════ */
 .agent-item {
   padding: 10px 16px 10px 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: background 0.15s;
+  transition: background var(--duration-fast) var(--ease-spring);
   border-bottom: 1px solid var(--color-border);
 }
 .agent-item:hover {
-background: var(--color-bg-hover);
+  background: var(--color-bg-hover);
 }
-/* 会话删除按钮：仅在 hover 会话项时显示 */
+/* 按压反馈 */
+.agent-item:active {
+  background: var(--color-bg-active);
+  transition: background 0.06s var(--ease-out-soft);
+}
 .agent-item:hover .session-delete-btn {
-opacity: 1 !important;
+  opacity: 1 !important;
 }
 .agent-item:hover .session-action-btn {
-opacity: 1 !important;
+  opacity: 1 !important;
 }
 
-/* ── 会话子列表 ────────────────────────────────────── */
+/* ── 会话子列表 ── */
 .session-sublist {
-background: var(--color-bg-sidebar, rgba(0,0,0,0.02));
-border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-sidebar, rgba(0, 0, 0, 0.02));
+  border-bottom: 1px solid var(--color-border);
 }
 .session-item {
-padding: 6px 16px 6px 8px;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 8px;
-transition: background 0.12s;
-position: relative;
+  padding: 6px 16px 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--duration-fast) var(--ease-spring);
+  position: relative;
 }
 .session-item:hover {
-background: var(--color-bg-hover);
+  background: var(--color-bg-hover);
+}
+.session-item:active {
+  background: var(--color-bg-active);
+  transition: background 0.06s var(--ease-out-soft);
 }
 .session-item.active {
-background: var(--color-primary-alpha-15, rgba(99, 102, 241, 0.12));
-border-left: 3px solid var(--color-primary);
-padding-left: 5px;
+  background: var(--color-bg-active);
+  border-left: 3px solid var(--color-primary);
+  padding-left: 5px;
 }
 .session-item.active .session-title {
-color: var(--color-primary);
-font-weight: 600;
+  color: var(--color-primary);
+  font-weight: 600;
 }
 .session-item.active .session-icon {
-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }
 .session-item.active::before {
-display: none;
+  display: none;
 }
 .session-rename-input {
-flex: 1;
-min-width: 0;
-font-size: 13px;
-padding: 2px 6px;
-border: 1px solid var(--color-primary);
-border-radius: 4px;
-background: var(--color-bg-panel);
-color: var(--color-text);
-outline: none;
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  padding: 2px 6px;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  background: var(--color-bg-panel);
+  color: var(--color-text);
+  outline: none;
 }
 .session-new-btn-inline {
-width: 24px;
-height: 24px;
-display: flex;
-align-items: center;
-justify-content: center;
-border-radius: 4px;
-cursor: pointer;
-flex-shrink: 0;
-color: var(--color-text-muted);
-transition: all 0.15s;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: all var(--duration-fast) var(--ease-spring);
 }
 .session-new-btn-inline:hover {
-background: var(--color-bg-hover);
-color: var(--color-primary);
+  background: var(--color-bg-hover);
+  color: var(--color-primary);
 }
 
-/* ── 右键上下文菜单项 ───────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 11. 右键上下文菜单 — 半透明毛玻璃弹窗
+ * ════════════════════════════════════════════════════════════ */
 .ctx-menu-item {
   padding: 8px 12px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
   color: var(--color-text-secondary);
-  transition: background 0.12s, color 0.12s;
+  transition: background var(--duration-fast) var(--ease-spring),
+              color var(--duration-fast) var(--ease-spring);
 }
 .ctx-menu-item:hover {
   background: var(--color-bg-hover);
   color: var(--color-primary);
 }
+.ctx-menu-item:active {
+  background: var(--color-bg-active);
+  transition: background 0.06s var(--ease-out-soft);
+}
 .ctx-menu-danger:hover {
-  color: #ef4444 !important;
+  color: var(--color-error) !important;
 }
 
 .agent-item.active {
   background: var(--color-bg-active);
 }
 
-/* 状态指示灯 */
+/* 状态指示灯 — Apple 风格带辉光 */
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
-.status-dot.online { background: var(--color-success); }
-.status-dot.offline { background: var(--color-text-muted); }
+.status-dot.online {
+  background: var(--color-success);
+  box-shadow: 0 0 6px var(--color-success), 0 0 12px rgba(48, 209, 88, 0.3);
+}
+.status-dot.offline {
+  background: var(--color-text-muted);
+}
 .status-dot.processing {
   background: var(--color-warning);
   animation: pulse 1.5s infinite;
@@ -576,32 +764,36 @@ color: var(--color-primary);
   50% { opacity: 0.4; }
 }
 
-/* ── 骨架屏 ──────────────────────────────────────────── */
+/* ── 骨架屏 ── */
 .skeleton {
   background: linear-gradient(90deg, var(--color-bg-hover) 25%, var(--color-bg-card) 50%, var(--color-bg-hover) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 @keyframes skeleton-shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
-/* ── 搜索框 ──────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 12. 搜索框 — Apple 圆角 + 毛玻璃
+ * ════════════════════════════════════════════════════════════ */
 .search-box {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   margin: 8px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--color-bg-hover);
-  transition: background 0.15s;
+  transition: background var(--duration-fast) var(--ease-spring),
+              box-shadow var(--duration-fast) var(--ease-spring);
   flex-shrink: 0;
 }
 .search-box:focus-within {
-  background: var(--color-bg-active);
+  background: var(--color-bg-card);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 .search-input {
   border: none;
@@ -616,21 +808,34 @@ color: var(--color-primary);
   color: var(--color-text-muted);
 }
 
-/* ── 标题栏 ──────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 13. 标题栏 — 浮动半透明 chrome (替代硬边框)
+ * ════════════════════════════════════════════════════════════ */
 .chat-header {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--color-border);
+  padding: 14px 20px;
+  /* 浮动 chrome: 半透明 + 毛玻璃，内容可在其下滚动 */
+  background: var(--material-toolbar);
+  backdrop-filter: var(--material-toolbar-blur);
+  -webkit-backdrop-filter: var(--material-toolbar-blur);
+  /* 滚动边缘效果 — 渐变阴影替代 1px border-bottom */
+  box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: 52px;
+  flex-shrink: 0;
+  z-index: 5;
 }
 .chat-header .title {
   font-weight: 600;
   font-size: 16px;
+  /* 大字负字距 — Apple Typography */
+  letter-spacing: -0.01em;
 }
 
-/* ── 消息容器 ────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════
+ * 14. 消息容器 — 滚动区域
+ * ════════════════════════════════════════════════════════════ */
 .message-container {
   flex: 1;
   overflow-y: auto;
@@ -638,9 +843,11 @@ color: var(--color-primary);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* 平滑滚动 */
+  scroll-behavior: smooth;
 }
 
-/* ── 空状态 ──────────────────────────────────────────── */
+/* ── 空状态 ── */
 .empty-state {
   flex: 1;
   display: flex;
@@ -655,8 +862,92 @@ color: var(--color-primary);
   opacity: 0.3;
 }
 
-/* 旋转动画（用于同步中加载图标） */
+/* 旋转动画 */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ════════════════════════════════════════════════════════════
+ * 15. 无障碍 — 降低动画 + 降低透明度适配
+ * Apple Design: reduced motion 不等于无反馈，而是更温和的替代
+ * ════════════════════════════════════════════════════════════ */
+
+/* 降低动画 — 用交叉淡入替代滑动/弹簧，保留颜色变化 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* 保留 :active 即时反馈，但去除 scale */
+  .nav-btn:active,
+  .action-btn:active,
+  .feedback-copy-btn:active,
+  .feedback-close-btn:active {
+    transform: none;
+  }
+}
+
+/* 降低透明度 — 半透明表面变为不透明，提升可读性 */
+@media (prefers-reduced-transparency: reduce) {
+  .nav-sidebar {
+    background: var(--color-bg-nav);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .list-panel {
+    background: var(--color-bg-panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .chat-header {
+    background: var(--color-bg-panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .message-bubble.assistant {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .action-btn {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* 提高对比度 — 更明确的边界 */
+@media (prefers-contrast: more) {
+  .nav-sidebar,
+  .list-panel {
+    border-right: 1px solid var(--color-border-strong);
+    box-shadow: none;
+  }
+  .chat-header {
+    border-bottom: 1px solid var(--color-border-strong);
+    box-shadow: none;
+  }
+}
+
+/* ── 闪烁光标动画 (流式输出) ── */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ── 通用工具类 ── */
+/* 浮动弹窗材质 (用于模态框、上下文菜单等) */
+.apple-material-popover {
+  background: var(--material-popover);
+  backdrop-filter: var(--material-popover-blur);
+  -webkit-backdrop-filter: var(--material-popover-blur);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xl);
+}
+
+/* 半透明遮罩层 (用于模态框背景) */
+.apple-scrim {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }

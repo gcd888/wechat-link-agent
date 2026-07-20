@@ -952,11 +952,12 @@ export function AgentManager() {
       )}
 
       <style>{`
-        .dialog-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
-        .dialog { background:var(--color-bg-panel); border:1px solid var(--color-border); border-radius:12px; padding:24px; width:400px; max-width:90vw; }
-        .action-btn { padding:8px 16px; border:1px solid var(--color-border); border-radius:6px; background:transparent; color:var(--color-text); cursor:pointer; font-size:13px; transition:all 0.15s; margin-top:8px; }
+        .dialog-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:1000; }
+        .dialog { background:var(--material-popover); backdrop-filter:var(--material-popover-blur); -webkit-backdrop-filter:var(--material-popover-blur); border:1px solid var(--color-border); border-radius:16px; padding:24px; width:400px; max-width:90vw; box-shadow:var(--shadow-xl); }
+        .action-btn { padding:8px 16px; border:1px solid var(--color-border-strong); border-radius:10px; background:var(--color-bg-card); color:var(--color-text); cursor:pointer; font-size:13px; transition:all var(--duration-fast) var(--ease-spring); margin-top:8px; }
         .action-btn:hover { background:var(--color-bg-hover); }
-        .action-btn.primary { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
+        .action-btn:active { transform:scale(0.97); transition:transform 0.08s var(--ease-out-soft); }
+        .action-btn.primary { background:var(--color-primary); color:#fff; border-color:var(--color-primary); box-shadow:0 2px 8px rgba(0,122,255,0.2); }
         .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
       `}</style>
     </div>
