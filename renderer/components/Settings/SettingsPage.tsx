@@ -709,9 +709,8 @@ type FeedbackChannel = {
 
 function FeedbackSettings() {
   const t = useT()
-  // 微信群二维码图片链接（稍后由用户提供，留空时显示占位提示）
-  // 占位常量：后续可替换为真实图片 URL
-  const WECHAT_GROUP_IMG = 'https://ftp.mioz.cn/test/2026/07/09/1783583357.JPG'
+  // 微信群二维码图片链接（CDN 托管，可随时替换）
+  const WECHAT_GROUP_IMG = 'https://img.gcd888.cc.cd/rest/WeChat-Link-Agent/wechat_group.jpg'
 
   // 腾讯问卷投放链接（中英双语，含图片上传题，支持功能建议/Bug/页面优化反馈）
   const SURVEY_URL = 'https://wj.qq.com/s2/27267265/5620'

@@ -64,13 +64,19 @@ export function NavSidebar() {
 
   return (
     <nav className="nav-sidebar">
-      {/* 应用 Logo */}
+      {/* 应用 Logo — Apple 风格圆角 + 柔和阴影 */}
       <img
         src="./assets/brand/logo.svg"
         alt={t('app.name', '微连')}
         width={36}
         height={36}
-        style={{ borderRadius: '10px', objectFit: 'contain', marginBottom: '12px', padding: '2px' }}
+        style={{
+          borderRadius: '10px',
+          objectFit: 'contain',
+          marginBottom: '12px',
+          padding: '2px',
+          boxShadow: 'var(--shadow-sm)',
+        }}
         title={t('app.logoTitle', '微连 - WeChat Link Agent')}
       />
 
@@ -79,7 +85,7 @@ export function NavSidebar() {
       <NavButton icon={<Wrench size={22} strokeWidth={1.5} />} label={t('nav.toolbox', '工具箱')} item="toolbox" active={navActive} onClick={setNavActive} />
       <NavButton icon={<Store size={22} strokeWidth={1.5} />} label={t('nav.store', '商城')} item="store" active={navActive} onClick={setNavActive} />
 
-      <div style={{ width: '24px', height: '1px', background: 'var(--color-border)', margin: '6px 0', flexShrink: 0 }} />
+      <div style={{ width: '28px', height: '1px', background: 'var(--color-border)', margin: '8px 0', flexShrink: 0, borderRadius: '1px' }} />
 
       <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
         {/* 微信连接状态按钮 - 保留手机图标，悬停显示连接信息 */}

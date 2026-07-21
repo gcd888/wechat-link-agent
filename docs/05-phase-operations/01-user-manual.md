@@ -7,7 +7,7 @@
 | 文档名称 | 用户操作手册 |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-07-01 |
 
 ---
 
@@ -572,8 +572,8 @@ A: 可能原因：
 
 ## 11. 获取帮助
 
-- **GitHub Issues**: https://github.com/your-org/wechat-link-agent/issues
-- **文档**: https://docs.wechat-link-agent.com
+- **GitHub Issues**: https://github.com/gcd888/wechat-link-agent/issues
+- **Gitee Issues**: https://gitee.com/gcd888/wechat-link-agent/issues
 - **微信群**: 扫描应用内的二维码加入
 
 ---

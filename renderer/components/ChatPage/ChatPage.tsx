@@ -272,15 +272,15 @@ export function ChatPage() {
             onClick={() => setMarkdownPreview((v) => !v)}
             title={markdownPreview ? t('chat.plainText', '纯文本') : t('chat.markdownPreview', 'Markdown 预览')}
             style={{
-              padding: '4px 8px',
+              padding: '6px 10px',
               border: '1px solid var(--color-border)',
-              borderRadius: '4px',
+              borderRadius: '8px',
               background: 'transparent',
               color: 'var(--color-text-secondary)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              transition: 'all 0.15s',
+              transition: 'all var(--duration-fast) var(--ease-spring)',
             }}
           >
             {markdownPreview ? <FileText size={14} strokeWidth={1.5} /> : <BookOpen size={14} strokeWidth={1.5} />}
@@ -301,20 +301,20 @@ export function ChatPage() {
         ) : (
           messages.map((msg, idx) => <MessageBubble key={msg.id || idx} message={msg} markdownMode={markdownPreview} />)
         )}
-        {sendError && <div style={{ padding: '10px 14px', background: 'var(--color-error)', color: '#fff', borderRadius: '8px', fontSize: '13px', marginTop: '8px', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{t('chat.sendFailed', '发送失败')}: {sendError}</div>}
+        {sendError && <div style={{ padding: '10px 14px', background: 'var(--color-error)', color: '#fff', borderRadius: '12px', fontSize: '13px', marginTop: '8px', whiteSpace: 'pre-wrap', lineHeight: 1.6, boxShadow: 'var(--shadow-sm)' }}>{t('chat.sendFailed', '发送失败')}: {sendError}</div>}
         <div ref={messagesEndRef} />
       </div>
 
       {/* ── 输入区 ── */}
       {isClawBotMode ? (
-        <div style={{ padding: '10px 20px', borderTop: '1px solid var(--color-border)', background: 'var(--color-bg-panel)', textAlign: 'center', fontSize: '12px', color: 'var(--color-text-muted)' }}>
+        <div style={{ padding: '10px 20px', borderTop: '1px solid var(--color-border)', background: 'var(--material-toolbar)', backdropFilter: 'var(--material-toolbar-blur)', WebkitBackdropFilter: 'var(--material-toolbar-blur)', textAlign: 'center', fontSize: '12px', color: 'var(--color-text-muted)' }}>
           {t('chat.readOnlyMode', '🔒 只读模式 — 此处仅查看微信对话记录，如需对话请在微信中发送消息')}
         </div>
       ) : (
-        <div style={{ padding: '8px 20px 12px', borderTop: '1px solid var(--color-border)', background: 'var(--color-bg-panel)', position: 'relative' }}>
+        <div style={{ padding: '8px 20px 12px', borderTop: '1px solid var(--color-border)', background: 'var(--material-toolbar)', backdropFilter: 'var(--material-toolbar-blur)', WebkitBackdropFilter: 'var(--material-toolbar-blur)', position: 'relative' }}>
           {/* 斜杠命令提示列表 */}
           {showSlashList && (
-            <div style={{ position: 'absolute', bottom: '100%', left: '20px', right: '20px', maxHeight: '260px', overflowY: 'auto', background: 'var(--color-bg-panel)', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: '0 -4px 12px rgba(0,0,0,0.15)', zIndex: 100 }}>
+            <div style={{ position: 'absolute', bottom: '100%', left: '20px', right: '20px', maxHeight: '260px', overflowY: 'auto', background: 'var(--material-popover)', backdropFilter: 'var(--material-popover-blur)', WebkitBackdropFilter: 'var(--material-popover-blur)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', zIndex: 100 }}>
               <div style={{ padding: '6px 12px', fontSize: '11px', color: 'var(--color-text-muted)', borderBottom: '1px solid var(--color-border)' }}>{t('chat.commands', '可用命令')}</div>
               {filteredCommands.map((cmd, idx) => (
                 <div key={cmd.display} onClick={() => { setInputText(cmd.actualSlash + ' '); setShowSlashList(false); inputRef.current?.focus() }} onMouseEnter={() => setSelectedCmdIndex(idx)}
@@ -354,7 +354,7 @@ export function ChatPage() {
               </span>
               {/* 弹出菜单 */}
               {showPlusMenu && (
-                <div style={{ position: 'absolute', bottom: '100%', left: '0', marginBottom: '4px', background: 'var(--color-bg-panel)', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', zIndex: 200, minWidth: '140px', padding: '4px', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', bottom: '100%', left: '0', marginBottom: '4px', background: 'var(--material-popover)', backdropFilter: 'var(--material-popover-blur)', WebkitBackdropFilter: 'var(--material-popover-blur)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', zIndex: 200, minWidth: '140px', padding: '6px', overflow: 'hidden' }}>
                   <div onClick={handleSelectFiles} style={{ padding: '8px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', borderRadius: '6px', color: 'var(--color-text)', whiteSpace: 'nowrap' }}
                     onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg-hover)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
@@ -380,7 +380,7 @@ export function ChatPage() {
             )}
 
             <button onClick={handleSend} disabled={isCurrentAgentProcessing || !inputText.trim() || !canSend}
-              style={{ padding: '8px 18px', borderRadius: '8px', border: 'none', background: inputText.trim() && canSend ? 'var(--color-primary)' : 'var(--color-bg-hover)', color: inputText.trim() && canSend ? '#fff' : 'var(--color-text-muted)', cursor: inputText.trim() && canSend ? 'pointer' : 'not-allowed', fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              style={{ padding: '8px 18px', borderRadius: '10px', border: 'none', background: inputText.trim() && canSend ? 'var(--color-primary)' : 'var(--color-bg-hover)', color: inputText.trim() && canSend ? '#fff' : 'var(--color-text-muted)', cursor: inputText.trim() && canSend ? 'pointer' : 'not-allowed', fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap', transition: 'transform 0.08s var(--ease-out-soft)', boxShadow: inputText.trim() && canSend ? '0 2px 8px rgba(0, 122, 255, 0.2)' : 'none' }}>
               {isCurrentAgentProcessing ? t('chat.processing', '处理中...') : t('chat.send', '发送')}
             </button>
           </div>

@@ -527,7 +527,7 @@ export function ToolboxPage() {
               }} />
             )}
           </div>
-          {/* 模板搜索下拉框 */}
+          {/* 模板搜索下拉框 — 使用 popover 材质（不透明 + 毛玻璃），避免与表单内容重叠透叠 */}
           {isEditable && showTemplateDropdown && (
             <div style={{
               position: 'absolute',
@@ -539,7 +539,9 @@ export function ToolboxPage() {
               overflowY: 'auto',
               borderRadius: '6px',
               border: '1px solid var(--color-border)',
-              background: 'var(--color-bg-panel)',
+              background: 'var(--material-popover)',
+              backdropFilter: 'var(--material-popover-blur)',
+              WebkitBackdropFilter: 'var(--material-popover-blur)',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
               zIndex: 100,
             }}>

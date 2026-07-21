@@ -103,7 +103,9 @@ export function DisclaimerModal({
         position: 'fixed',
         inset: 0,
         zIndex: 1000,
-        background: 'rgba(0,0,0,0.5)',
+        background: 'rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(4px)',
+        WebkitBackdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -112,14 +114,16 @@ export function DisclaimerModal({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: 'var(--color-bg-panel)',
-          borderRadius: '12px',
+          background: 'var(--material-popover)',
+          backdropFilter: 'var(--material-popover-blur)',
+          WebkitBackdropFilter: 'var(--material-popover-blur)',
+          borderRadius: '16px',
           width: `${width}px`,
           maxWidth: '90vw',
           maxHeight: '80vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+          boxShadow: 'var(--shadow-xl)',
         }}
       >
         {/* ── 弹窗头部 ── */}

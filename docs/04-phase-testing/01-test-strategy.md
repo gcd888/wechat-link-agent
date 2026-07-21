@@ -7,7 +7,7 @@
 | 文档名称 | 测试策略与计划 |
 | 项目名称 | 微连 (WeChat Link Agent) |
 | 版本号 | v1.0 |
-| 创建日期 | 2025-01-10 |
+| 创建日期 | 2026-06-15 |
 
 ---
 
@@ -144,10 +144,10 @@ describe('数据库集成测试', () => {
 
   it('应正确保存和读取配置', async () => {
     const db = await getDb()
-    db.run("INSERT INTO config (key, value) VALUES ('theme', 'dark')")
+    db.run("INSERT INTO app_config (key, value) VALUES ('theme', 'dark')")
     saveDb()
 
-    const result = db.exec("SELECT value FROM config WHERE key = 'theme'")
+    const result = db.exec("SELECT value FROM app_config WHERE key = 'theme'")
     expect(result[0].values[0][0]).toBe('dark')
   })
 })
@@ -419,24 +419,29 @@ Agent 从列表移除
 # .github/workflows/test.yml
 name: Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+    branches: [dev]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install
+          cache: 'npm'
+      - run: npm install --legacy-peer-deps
       - run: npm test
       - run: npm run test:e2e
 ```
 
 ### 11.2 测试触发条件
 
-- Push 到 `main` 分支
+- Push 到 `master` 或 `dev` 分支
 - 创建 Pull Request
 - 定时任务（每日凌晨）
 

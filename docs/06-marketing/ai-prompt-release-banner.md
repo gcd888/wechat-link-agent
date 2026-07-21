@@ -34,7 +34,7 @@
 | 目标用户 | 开发者 / 程序员 / 技术爱好者 |
 | 技术栈 | Electron 33 + React 18 + TypeScript 5.7 |
 | 支持平台 | Windows / macOS / Linux |
-| 版本号 | v0.1.0 |
+| 版本号 | v0.0.1 |
 | 字体 | 系统无衬线字体（-apple-system / Segoe UI / Roboto） |
 
 ---
@@ -69,7 +69,7 @@
 【下方区域 — Slogan 与品牌信息（占画面 60-100%）】
 - 中下方居中放置 Slogan："微信即遥控，万物皆可连"（深蓝色 #031B61，大号粗体字）
 - Slogan 下方小字："让每个开发者的微信都成为 AI 编程助手的远程控制台"（浅灰色 #888888，中号字）
-- 底部最下方一行：左侧 "v0.1.0"，右侧 "Windows · macOS · Linux"（灰色 #AAAAAA，小号字）
+- 底部最下方一行：左侧 "v0.0.1"，右侧 "Windows · macOS · Linux"（灰色 #AAAAAA，小号字）
 
 【配色方案】
 - 背景：白色 #FFFFFF / 极浅灰蓝 #F5F7FB
@@ -117,7 +117,7 @@ Card style: white bg, 8px rounded corners, 1px border, minimal shadow. Icons in 
 Lower section (60-100%):
 - Center: Slogan "微信即遥控，万物皆可连" in dark blue (#031B61), large bold
 - Below slogan: "Turn every developer's WeChat into an AI coding remote control" in light gray (#888888)
-- Bottom row: left "v0.1.0", right "Windows · macOS · Linux" in small gray (#AAAAAA)
+- Bottom row: left "v0.0.1", right "Windows · macOS · Linux" in small gray (#AAAAAA)
 
 Color palette: white background, dark blue (#031B61) titles, purple (#8B5ACC) accent, light blue (#8FC3FF) secondary, gray text tones.
 Style: flat design, 8px rounded corners, line icons, no heavy shadows, generous whitespace, no people, no 3D, no photos.
@@ -152,7 +152,7 @@ Minimalist product launch poster, white background with subtle gray-blue gradien
 生成的图片文件请按以下规范命名，并放置于 `docs/06-marketing/` 目录：
 
 ```
-docs/06-marketing/poster-v{版本号}.png           # 如 poster-v0.1.0.png
+docs/06-marketing/poster-v{版本号}.png           # 如 poster-v0.0.1.png
 docs/06-marketing/poster-v{版本号}-bg.png        # 纯背景版（无文字），供后期叠加
 docs/06-marketing/poster-v{版本号}@2x.png        # 高清 2x 版本
 ```
