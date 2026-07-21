@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/img/logo/logo.png" alt="微连 Logo" width="120" />
+  <img src="https://img.gcd888.cc.cd/rest/WeChat-Link-Agent/logo.png" alt="微连 Logo" width="120" />
 </p>
 
 <h1 align="center">微连 (WeChat Link Agent)</h1>
